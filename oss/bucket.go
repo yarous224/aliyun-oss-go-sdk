@@ -836,6 +836,29 @@ func (bucket Bucket) SignURL(objectKey string, method HTTPMethod, expiredInSec i
 	return bucket.Client.Conn.signURL(method, bucket.BucketName, objectKey, expiration, params, headers), nil
 }
 
+func (bucket Bucket) SignHeader(objectKey string, method HTTPMethod) *http.Request {
+	conn := bucket.Client.Conn
+	um := bucket.Client.Conn.url
+	uri := um.getURL(bucket.BucketName, objectKey, "")
+	req := &http.Request{
+		Method:     strings.ToUpper(string(method)),
+		URL:        uri,
+		Proto:      "HTTP/1.1",
+		ProtoMajor: 1,
+		ProtoMinor: 1,
+		Header:     make(http.Header),
+		Host:       uri.Host,
+	}
+
+	req.Header.Set(HTTPHeaderDate, GetNowGMT())
+	req.Header.Set("x-oss-date", GetNowGMT())
+	req.Header.Set("Host", conn.config.Endpoint)
+
+	conn.signHeader(req, um.getResource(bucket.BucketName, objectKey, ""))
+
+	return req
+}
+
 // PutObjectWithURL uploads an object with the URL. If the object exists, it will be overwritten.
 // PutObjectWithURL It will not generate minetype according to the key name.
 //
