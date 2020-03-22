@@ -195,16 +195,6 @@ func ObjectStorageClass(storageClass StorageClassType) Option {
 	return setHeader(HTTPHeaderOssStorageClass, string(storageClass))
 }
 
-// Callback is an option to set callback values
-func Callback(callback string) Option {
-	return setHeader(HTTPHeaderOssCallback, callback)
-}
-
-// CallbackVar is an option to set callback user defined values
-func CallbackVar(callbackVar string) Option {
-	return setHeader(HTTPHeaderOssCallbackVar, callbackVar)
-}
-
 // RequestPayer is an option to set payer who pay for the request
 func RequestPayer(payerType PayerType) Option {
 	return setHeader(HTTPHeaderOssRequester, strings.ToLower(string(payerType)))
@@ -333,6 +323,16 @@ func PartNumberMarker(value int) Option {
 // Sequential is an option to set sequential parameter for InitiateMultipartUpload
 func Sequential() Option {
 	return addParam("sequential", "")
+}
+
+// Callback is an option to set callback values
+func Callback(callback string) Option {
+	return addParam("callback", callback)
+}
+
+// CallbackVar is an option to set callback user defined values
+func CallbackVar(callbackVar string) Option {
+	return addParam("callback-var", callbackVar)
 }
 
 // DeleteObjectsQuiet false:DeleteObjects in verbose mode; true:DeleteObjects in quite mode. Default is false.
