@@ -838,8 +838,7 @@ func (bucket Bucket) SignURL(objectKey string, method HTTPMethod, expiredInSec i
 
 func (bucket Bucket) SignHeader(objectKey string, method HTTPMethod) *http.Request {
 	conn := bucket.Client.Conn
-	um := bucket.Client.Conn.url
-	uri := um.getURL(bucket.BucketName, objectKey, "")
+	uri := conn.url.getURL(bucket.BucketName, objectKey, "")
 	req := &http.Request{
 		Method:     strings.ToUpper(string(method)),
 		URL:        uri,
@@ -854,7 +853,7 @@ func (bucket Bucket) SignHeader(objectKey string, method HTTPMethod) *http.Reque
 	req.Header.Set("x-oss-date", GetNowGMT())
 	req.Header.Set("Host", conn.config.Endpoint)
 
-	conn.signHeader(req, um.getResource(bucket.BucketName, objectKey, ""))
+	conn.signHeader(req, conn.getResource(bucket.BucketName, objectKey, ""))
 
 	return req
 }
